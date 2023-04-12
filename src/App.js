@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Home from "./components/Home";
+import Home from "./Pages/Home";
 // import AddContact from './components/AddContact';
 // import EditContact from './components/EditContact';
 import { ToastContainer } from "react-toastify";
-import Navbar from "./components/Navbar";
-import Contacts from "./components/Contacts";
+import Navbar from "./Header/Navbar";
+import UserProfile from "./components/UserProfile";
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/add" element={<Contacts />} />
-        <Route path="/edit/:id" element={<Contacts />} />
+        <Route path="/add" element={<UserProfile/>} />
+        <Route path="/edit/:id" element={<UserProfile/>} />
       </Routes>
     </div>
   );

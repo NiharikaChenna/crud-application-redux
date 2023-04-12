@@ -6,13 +6,15 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
+  // get the contacts from the redux store
   const contacts = useSelector((state) => state);
 
   const dispatch = useDispatch();
 
+  // function to delete a contact
   const deleteContact = (id) => {
-    dispatch({ type: "DELETE_CONTACT", payload: id });
-    toast.success("contact deleted sucessfully !");
+    dispatch({ type: "DELETE_CONTACT", payload: id }); // Dispatch the deleteContact action 
+    toast.success("contact deleted sucessfully !"); // Success message using react-toastify
   };
   return (
     <div className="container">

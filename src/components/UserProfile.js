@@ -1,43 +1,28 @@
 import { useController, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { addContact, editContact } from "../Redux/Action";
+import { addContact, editContact } from "../Services/Actions/Action";
 import { toast } from "react-toastify";
-import * as yup from "yup";
+import schema from "./ValidationSchema";
 
-const schema = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  number: yup
-    .string()
-    .matches(/^\d{10}$/, "Invalid phone number")
-    .required("Phone number is required"),
-});
-
-const Contacts = () => {
-  const dispatch = useDispatch();
-  const { id } = useParams();
-  const history = useNavigate();
+const UserProfile = () => {
+  const dispatch = useDispatch(); // Dispatch function from the react-redux hook
+  const { id } = useParams(); // Id parameter from the URL using the useParams hook
+  const history = useNavigate(); // History object from the react-router-dom
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
-  const contacts = useSelector((state) => state);
+  } = useForm(); // Form control functions from the react-hook-form
+  const contacts = useSelector((state) => state); // Get the contacts array from the redux store using the useSelector hook
   const currentContact = contacts.find(
     (contact) => contact.id === parseInt(id)
-  );
+  ); // Find the current contact based on the id parameter
 
-  const contactToEdit = currentContact ? true : false;
+  const contactToEdit = currentContact ? true : false; // Determine if the component is used for editing or adding a contact
 
-  // const nameController = useController({
-  //   name: "name",
-  //   control,
-  //   defaultValue: name,
-  //   rules: { required: "Name is required" },
-  // });
-
+  // Use the useController hook to get the name, email, and number fields and their validation rules
   const name = useController({
     name: "name",
     control,
@@ -73,6 +58,7 @@ const Contacts = () => {
     defaultValue: currentContact ? currentContact.number : "",
   });
 
+  // Define the onSubmit function, which will be called when the form is submitted
   const onSubmit = async (data) => {
     try {
       await schema.validate(data, { abortEarly: false });
@@ -88,18 +74,19 @@ const Contacts = () => {
             name: name.field.value,
             email: email.field.value,
             number: number.field.value,
-          };
+          }; // Create a new contact object based on the form data and the current contact id
       if (contactToEdit) {
-        dispatch(editContact(id, data, user));
-        toast.success("Student updated successfully !!");
-        history("/");
+        dispatch(editContact(id, data, user)); // Dispatch the editContact action if the component is used for editing
+        toast.success("Student updated successfully !!"); // Show a success toast message
+        history("/"); // Navigate to the home page
       } else {
-        dispatch(addContact(data, user));
+        dispatch(addContact(data, user)); // Dispatch the addContact action if the component is used for adding a new contact
         toast.success("Student added successfully !!");
         history("/");
-        reset();
+        reset(); // Reset the form after submission
       }
     } catch (err) {
+      // Iterate through each error message and display it using react-toastify
       err.inner.forEach((error) => {
         toast.error(error.message);
       });
@@ -108,6 +95,7 @@ const Contacts = () => {
 
   return (
     <div className="container">
+      {/* The contactToEdit prop is used to conditionally render a heading based on whether the form is for adding a new student or editing an existing one. */}
       {contactToEdit ? (
         <h1 className="display-3 my-5 text-center">Edit Student {id}</h1>
       ) : (
@@ -116,6 +104,7 @@ const Contacts = () => {
       <div className="row">
         <div className="col-md-6 shadow mx-auto p-5">
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Form inputs */}
             <div className="form-group">
               <input
                 type="text"
@@ -149,7 +138,6 @@ const Contacts = () => {
                 value={contactToEdit ? "Update" : "Add Student"}
                 className="btn btn-block btn-dark"
               />
-              {console.log("heloooooo", contactToEdit)}
               {contactToEdit && (
                 <Link to="/" className="btn btn-danger ms-3">
                   Cancel
@@ -162,5 +150,4 @@ const Contacts = () => {
     </div>
   );
 };
-export default Contacts;
-
+export default UserProfile;

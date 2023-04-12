@@ -26,6 +26,7 @@ const initialState = [
 ];
 
 export const contactReducer = (state = initialState, action) => {
+  // Switch statement to handle different actions
   switch (action.type) {
     case "ADD_CONTACT":
       state = [...state, action.payload];
